@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOYU - Find Your Way.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #5c35ae;
+    --primary-hover: #4e299a;
+    --accent: #7651c8;
+    --ink: #1a1626;
+    --muted: #575264;
+    --page: #fbf9ff;
+    --lavender: #f7f2ff;
+    --lilac: #f0e7ff;
+    --lilac-2: #e9dcff;
+    --lilac-badge: #e6dcff;
+    --mint: #9bf5c4;
+    --mint-dark: #006038;
+    --green-match: #007a4a;
+    --panel: #201a30;
+    --line: rgba(203, 195, 213, 0.5);
+    --shadow-sm: 0 1px 3px rgba(40, 20, 80, 0.05);
+    --shadow-md: 0 6px 18px rgba(40, 20, 80, 0.08);
+    --shadow-lg: 0 14px 34px rgba(40, 20, 80, 0.12);
+  }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--page);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+  input, select { font-family: inherit; }
+
+  .wrap { max-width: 1260px; margin: 0 auto; padding: 0 24px; width: 100%; }
+  .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--primary); }
+  .h2 { font-size: 32px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.25; }
+  .lead { font-size: 15px; line-height: 1.6; color: var(--muted); }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; font-size: 14px; font-weight: 700; padding: 12px 24px; transition: all .16s ease; cursor: pointer; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(92,53,174,.25); }
+  .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 6px 16px rgba(92,53,174,.35); }
+  .btn-soft { background: var(--lilac); color: var(--primary); font-weight: 700; }
+  .btn-soft:hover { background: var(--lilac-2); }
+  .btn-sm { font-size: 12px; padding: 8px 16px; border-radius: 8px; }
+
+  svg.i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+  .badge-mint { background: var(--mint); color: var(--mint-dark); }
+  .badge-purple { background: var(--lilac-2); color: var(--primary); }
+
+  /* ===== HEADER ===== */
+  .site-header { position: sticky; top: 0; z-index: 100; background: rgba(251,249,255,.98); backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); }
+  .site-header .bar { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  
+  .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .brand-mark { width: 34px; height: 34px; border-radius: 9px; background: var(--primary); display: grid; place-items: center; color: #fff; }
+  .brand-mark svg { width: 18px; height: 18px; fill: #fff; }
+  .brand-word { font-size: 21px; font-weight: 800; letter-spacing: -.5px; color: var(--primary); text-transform: uppercase; line-height: 1; }
+  .brand-tag { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: .2px; margin-top: 1px; }
+
+  .nav-menu { display: flex; align-items: center; gap: 4px; }
+  .nav-link { padding: 9px 13px; border-radius: 10px; font-size: 13.5px; font-weight: 600; color: #433e50; transition: all .15s; cursor: pointer; }
+  .nav-link:hover { color: var(--primary); background: var(--lavender); }
+  .nav-link.active { color: var(--primary); background: var(--lilac); font-weight: 700; }
+
+  .header-actions { display: flex; align-items: center; gap: 12px; }
+  .btn-get-started { background: var(--primary); color: #fff; font-size: 13.5px; font-weight: 700; padding: 10px 22px; border-radius: 12px; cursor: pointer; transition: all .16s; box-shadow: 0 4px 10px rgba(92,53,174,.2); }
+  .btn-get-started:hover { background: var(--primary-hover); transform: translateY(-1px); }
+  
+  .user-avatar-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 0 0 2px var(--lilac-2); }
+
+  /* ===== APP SECTIONS: STRICT SINGLE VIEW (ONLY ONE VISIBLE AT A TIME) ===== */
+  main { flex: 1; position: relative; }
+  .app-section { display: none !important; padding: 44px 0 72px; }
+  .app-section.current-view { display: block !important; animation: pageFade .2s ease-out; }
+  @keyframes pageFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .section-head { max-width: 680px; margin: 0 auto 36px; text-align: center; display: flex; flex-direction: column; gap: 8px; }
+
+  /* ===== 1. HOME VIEW (EXACT HERO) ===== */
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; padding: 20px 0 40px; }
+  
+  .pill-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--lilac-badge); border-radius: 999px; padding: 4px 14px 4px 6px; margin-bottom: 24px; }
+  .pill-badge .tag { background: var(--primary); color: #fff; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 999px; letter-spacing: .5px; }
+  .pill-badge .text { font-size: 11.5px; font-weight: 800; color: var(--primary); letter-spacing: .5px; text-transform: uppercase; }
+
+  .hero-left h1 { font-size: 46px; line-height: 1.2; font-weight: 800; letter-spacing: -1.2px; color: var(--ink); margin-bottom: 20px; }
+  .hero-left h1 span.purple { color: var(--primary); }
+  .hero-left p.lead { font-size: 15.5px; line-height: 1.65; color: var(--muted); max-width: 540px; margin-bottom: 32px; }
+
+  .hero-ctas { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+  .btn-find-path { background: var(--primary); color: #fff; font-size: 15px; font-weight: 700; padding: 14px 28px; border-radius: 12px; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 14px rgba(92,53,174,.25); cursor: pointer; transition: all .16s; }
+  .btn-find-path:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+  .btn-explore-domains { background: var(--lilac); color: var(--primary); font-size: 15px; font-weight: 700; padding: 14px 26px; border-radius: 12px; cursor: pointer; transition: all .16s; }
+  .btn-explore-domains:hover { background: var(--lilac-2); }
+
+  .trust-check-line { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); font-weight: 500; }
+  .trust-check-line svg { color: var(--green-match); width: 15px; height: 15px; stroke-width: 2.5; }
+
+  /* Right Interactive Preview Card */
+  .hero-card-container { background: #f6f0fd; border-radius: 28px; padding: 26px; border: 1px solid rgba(220, 208, 238, 0.6); display: flex; flex-direction: column; gap: 18px; box-shadow: var(--shadow-md); }
+  .hc-top-pills { display: flex; justify-content: space-between; align-items: center; }
+  .hc-pill-white { background: #fff; border-radius: 999px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+  .hc-pill-white.match { color: var(--green-match); }
+
+  .hc-milestone-card { background: #fff; border-radius: 20px; padding: 22px; box-shadow: 0 4px 12px rgba(40,20,80,.05); border: 1px solid rgba(230, 222, 245, 0.8); display: flex; flex-direction: column; gap: 16px; }
+  .hc-ms-head { display: flex; justify-content: space-between; align-items: flex-start; }
+  .hc-kicker { font-size: 10.5px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: #877f96; }
+  .hc-title { font-size: 19px; font-weight: 800; color: var(--ink); margin-top: 4px; line-height: 1.3; }
+  
+  .hc-ring { width: 46px; height: 46px; border-radius: 50%; border: 3px solid var(--lilac-2); border-top-color: var(--primary); display: grid; place-items: center; font-size: 11.5px; font-weight: 800; color: var(--primary); flex-shrink: 0; }
+  .hc-meta-row { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: #877f96; }
+  .hc-progress-track { height: 8px; border-radius: 999px; background: #eee6f8; overflow: hidden; }
+  .hc-progress-fill { height: 100%; width: 68%; background: var(--primary); border-radius: 999px; }
+
+  .hc-lesson-box { background: var(--lavender); border-radius: 12px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background .15s; }
+  .hc-lesson-box:hover { background: var(--lilac); }
+  .hc-lesson-left { display: flex; align-items: center; gap: 10px; }
+  .hc-play-icon { width: 28px; height: 28px; border-radius: 50%; background: #fff; color: var(--primary); display: grid; place-items: center; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .hc-lesson-title { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+  .hc-lesson-sub { font-size: 11px; color: var(--muted); }
+  .hc-resume-btn { font-size: 12px; font-weight: 800; color: var(--primary); }
+
+  .hc-bottom-tags { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 2px; }
+  .hc-tag { background: #fff; border-radius: 999px; padding: 5px 12px; font-size: 11.5px; font-weight: 700; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,.03); cursor: pointer; transition: all .15s; }
+  .hc-tag:hover { color: var(--primary); transform: translateY(-1px); }
+
+  /* ===== 2. LOGIN PAGE (WITH BLENDED TECH IMAGES) ===== */
+  .login-split-card {
+    background: #fff;
+    border-radius: 24px;
+    max-width: 980px;
+    margin: 10px auto;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    overflow: hidden;
+  }
+
+  .login-visual-panel {
+    background: linear-gradient(135deg, rgba(82, 38, 168, 0.92), rgba(118, 81, 200, 0.82)),
+                url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80') center/cover no-repeat;
+    padding: 44px 36px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+  .login-visual-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(155, 245, 196, 0.2), transparent 70%);
+    pointer-events: none;
+  }
+
+  .login-glass-code {
+    background: rgba(26, 18, 48, 0.82);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-family: 'Consolas', 'Menlo', monospace;
+    font-size: 12px;
+    color: #eaddff;
+    line-height: 1.6;
+    margin: 24px 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+  .login-glass-code .code-dots {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .login-glass-code .code-dots span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .login-tech-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .login-tech-pill {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .login-form-panel { padding: 44px 38px; display: flex; flex-direction: column; justify-content: center; }
+  .auth-toggle-bar { display: flex; background: var(--lilac); border-radius: 10px; padding: 4px; margin: 20px 0; }
+  .auth-toggle-btn { flex: 1; padding: 9px; text-align: center; font-size: 13px; font-weight: 700; border-radius: 8px; color: var(--muted); cursor: pointer; transition: all .15s; }
+  .auth-toggle-btn.active { background: #fff; color: var(--primary); box-shadow: var(--shadow-sm); }
+  .form-group { margin-bottom: 15px; }
+  .form-group label { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 6px; color: var(--ink); }
+  .form-group input { width: 100%; height: 44px; border-radius: 10px; border: 1.5px solid #d5cce2; padding: 0 14px; font-size: 13.5px; background: var(--page); }
+  .form-group input:focus { outline: none; border-color: var(--primary); background: #fff; }
+
+  /* ===== 3. CAREER ASSESSMENT (SURVEY) ===== */
+  .survey-card { background: #fff; border-radius: 20px; padding: 36px; max-width: 800px; margin: 0 auto; box-shadow: var(--shadow-md); border: 1px solid var(--line); }
+  .survey-bar-track { height: 8px; background: var(--lilac); border-radius: 999px; overflow: hidden; margin-bottom: 24px; }
+  .survey-bar-fill { height: 100%; background: var(--primary); width: 20%; transition: width .3s ease; }
+  .survey-step-tag { font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 6px; }
+  .survey-question { font-size: 22px; font-weight: 800; margin-bottom: 20px; line-height: 1.3; }
+  .survey-options { display: grid; gap: 12px; margin-bottom: 28px; }
+  .survey-opt { display: flex; align-items: flex-start; gap: 14px; padding: 16px; border-radius: 14px; border: 2px solid var(--line); background: #fff; cursor: pointer; transition: all .15s ease; }
+  .survey-opt:hover { border-color: var(--accent); background: var(--lavender); }
+  .survey-opt.selected { border-color: var(--primary); background: var(--lilac-2); }
+  .survey-opt input { margin-top: 3px; accent-color: var(--primary); }
+  .survey-opt b { display: block; font-size: 14px; font-weight: 700; color: var(--ink); }
+
+  .survey-result { display: none; text-align: center; flex-direction: column; align-items: center; gap: 16px; }
+  .survey-result.show { display: flex; }
+  .match-banner { background: var(--lavender); border: 1px solid var(--line); border-radius: 16px; padding: 22px; width: 100%; margin: 12px 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .match-stat small { font-size: 11px; color: var(--muted); font-weight: 700; display: block; }
+  .match-stat b { font-size: 16px; color: var(--primary); }
+
+  /* ===== 4. CAREER DOMAINS WITH REAL IMAGES ===== */
+  .domains-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .domain-card { background: #fff; border-radius: 20px; border: 2px solid var(--line); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-sm); cursor: pointer; transition: all .2s; }
+  .domain-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--shadow-md); }
+  .domain-card.selected-domain { border-color: var(--primary); background: #fbf9ff; box-shadow: 0 8px 24px rgba(92,53,174,.18); }
+  
+  .domain-img-box { position: relative; width: 100%; height: 160px; overflow: hidden; background: #e6dcff; }
+  .domain-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+  .domain-card:hover .domain-img-box img { transform: scale(1.05); }
+  .domain-img-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(32, 26, 48, 0.2) 0%, rgba(32, 26, 48, 0.75) 100%); }
+  .domain-img-badge { position: absolute; bottom: 12px; left: 14px; background: rgba(255,255,255,0.92); backdrop-filter: blur(4px); color: var(--primary); font-size: 11.5px; font-weight: 800; padding: 4px 12px; border-radius: 999px; }
+  
+  .domain-body { padding: 22px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 14px; }
+  .domain-body h3 { font-size: 19px; font-weight: 800; }
+  .domain-body p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .domain-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .domain-tag { background: var(--lavender); border-radius: 6px; padding: 3px 8px; font-size: 11px; font-weight: 600; color: var(--primary); }
+
+  /* ===== 5. STUDY MATERIALS WITH REAL IMAGES ===== */
+  .materials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .material-card { background: #fff; border-radius: 20px; border: 1px solid var(--line); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-sm); transition: all .2s; }
+  .material-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow-md); }
+  
+  .material-img-box { position: relative; width: 100%; height: 150px; overflow: hidden; background: #e6dcff; }
+  .material-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+  .material-card:hover .material-img-box img { transform: scale(1.05); }
+  .material-img-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(32, 26, 48, 0.7) 100%); }
+  .material-domain-pill { position: absolute; bottom: 12px; left: 14px; background: #fff; color: var(--primary); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; }
+
+  .material-body { padding: 22px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 14px; }
+  .material-body h3 { font-size: 17.5px; font-weight: 800; }
+  .material-body p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* Reader Modal */
+  .reader-modal { position: fixed; inset: 0; background: rgba(29,25,45,.65); backdrop-filter: blur(6px); z-index: 200; display: none; place-items: center; padding: 24px; }
+  .reader-modal.open { display: grid; }
+  .reader-box { background: #fff; border-radius: 20px; width: 100%; max-width: 760px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-lg); }
+  .reader-head { padding: 20px 28px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  .reader-body { padding: 28px; overflow-y: auto; font-size: 14px; line-height: 1.7; color: #2e2a39; }
+  .reader-body pre { background: var(--panel); color: #eaddff; padding: 16px; border-radius: 10px; font-family: monospace; font-size: 12px; overflow-x: auto; margin: 14px 0; }
+
+  /* ===== 6. LEARNING ROADMAP ===== */
+  .roadmap-active-bar { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px 28px; max-width: 860px; margin: 0 auto 28px; display: flex; justify-content: space-between; align-items: center; }
+  .roadmap-stages { display: flex; flex-direction: column; gap: 18px; max-width: 860px; margin: 0 auto; }
+  .stage-box { background: #fff; border-radius: 16px; padding: 24px; border: 1px solid var(--line); display: grid; grid-template-columns: 56px 1fr; gap: 20px; box-shadow: var(--shadow-sm); }
+  .stage-num { width: 48px; height: 48px; border-radius: 14px; background: var(--lilac-2); color: var(--primary); font-size: 20px; font-weight: 800; display: grid; place-items: center; }
+  .stage-box.current-step .stage-num { background: var(--primary); color: #fff; }
+  .stage-topics-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+  .stage-topic-pill { background: var(--lavender); border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .stage-topic-pill.checked { background: #e3fbed; border-color: #a3e9be; color: #005c3b; text-decoration: line-through; }
+  .stage-capstone { background: var(--page); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: var(--mid); font-weight: 600; border-left: 3px solid var(--accent); }
+
+  /* ===== 7. LEARNING RESOURCES ===== */
+  .res-search-box { max-width: 540px; margin: 0 auto 20px; position: relative; }
+  .res-search-box input { width: 100%; height: 46px; border-radius: 999px; border: 1.5px solid var(--line); padding: 0 20px 0 44px; font-size: 14px; background: #fff; }
+  .res-search-box input:focus { outline: none; border-color: var(--primary); }
+  .res-search-box svg { position: absolute; left: 16px; top: 15px; color: var(--muted); }
+  .res-filter-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 32px; }
+  .res-chip { padding: 7px 16px; border-radius: 999px; background: var(--lilac); color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; }
+  .res-chip.active { background: var(--primary); color: #fff; }
+  .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .res-card { background: #fff; border-radius: 16px; padding: 22px; border: 1px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; gap: 14px; box-shadow: var(--shadow-sm); }
+  .res-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .res-card-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--line); }
+  .btn-bookmark { color: var(--muted); cursor: pointer; padding: 6px; }
+  .btn-bookmark.saved { color: #f59e0b; }
+
+  /* ===== 8. DASHBOARD ===== */
+  .dash-layout { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-lg); border: 1px solid var(--line); display: grid; grid-template-columns: 280px 1fr; }
+  .dash-side { background: var(--lavender); padding: 28px 20px; border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+  .dash-user-card { display: flex; align-items: center; gap: 12px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+  .dash-user-card .avatar { width: 44px; height: 44px; font-size: 16px; background: var(--primary); border-radius: 50%; color: #fff; display: grid; place-items: center; }
+  .dash-track-switcher { background: #fff; padding: 12px; border-radius: 12px; border: 1px solid var(--line); margin: 16px 0; }
+  .dash-track-switcher label { font-size: 11px; font-weight: 700; color: var(--mid); text-transform: uppercase; margin-bottom: 6px; display: block; }
+  .dash-track-select { width: 100%; height: 36px; border-radius: 8px; border: 1px solid #d5cce2; padding: 0 8px; font-size: 12px; font-weight: 600; background: var(--page); }
+  .dash-content { padding: 32px; display: flex; flex-direction: column; gap: 24px; }
+  .dash-hero-banner { background: linear-gradient(135deg, var(--lilac-2), #fbf7ff); border: 1px solid var(--lilac-3); border-radius: 16px; padding: 24px; display: flex; justify-content: space-between; align-items: center; }
+  .dash-stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .dash-stat-box { background: var(--lavender); border-radius: 14px; padding: 16px; border: 1px solid var(--line); }
+  .dash-stat-box small { font-size: 11px; font-weight: 600; color: var(--muted); }
+  .dash-stat-box .val { font-size: 24px; font-weight: 800; color: var(--primary); margin-top: 4px; }
+
+  /* ===== FLOATING AI MENTOR ===== */
+  .ai-trigger { position: fixed; right: 28px; bottom: 28px; z-index: 150; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; padding: 13px 22px; border-radius: 999px; box-shadow: 0 8px 24px rgba(92,53,174,.4); display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .ai-drawer { position: fixed; right: 28px; bottom: 90px; width: 380px; height: 520px; background: #fff; border-radius: 20px; box-shadow: var(--shadow-lg); border: 1px solid var(--line); z-index: 160; display: none; flex-direction: column; overflow: hidden; }
+  .ai-drawer.open { display: flex; }
+  .ai-head { background: var(--primary); color: #fff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .ai-msgs { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: var(--lavender); }
+  .ai-bubble { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.45; }
+  .ai-bubble.bot { background: #fff; color: var(--ink); align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: var(--shadow-sm); }
+  .ai-bubble.user { background: var(--primary); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .ai-input-bar { padding: 12px 16px; background: #fff; display: flex; gap: 8px; border-top: 1px solid var(--line); }
+  .ai-input-bar input { flex: 1; height: 38px; border-radius: 999px; border: 1px solid #d5cce2; padding: 0 14px; font-size: 13px; }
+  .ai-input-bar input:focus { outline: none; border-color: var(--primary); }
+
+  /* Footer */
+  .site-footer { background: var(--panel); color: #cbc3d5; padding: 32px 0 24px; font-size: 12px; margin-top: auto; border-top: 1px solid rgba(255,255,255,.1); }
+  .footer-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+
+  @media (max-width: 960px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .nav-menu { display: none; }
+    .dash-layout { grid-template-columns: 1fr; }
+    .domains-grid, .materials-grid, .res-grid { grid-template-columns: 1fr; }
+    .login-split-card { grid-template-columns: 1fr; }
+    .login-visual-panel { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SVG SYMBOLS -->
+<svg style="display:none">
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></symbol>
+</svg>
+
+<!-- ===== HEADER ===== -->
+<header class="site-header">
+  <div class="wrap bar">
+    <div class="brand" onclick="openSection('home')">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24"><use href="#i-sparkle"/></svg>
+      </div>
+      <div>
+        <div class="brand-word">MOYU</div>
+        <div class="brand-tag">Find Your Way.</div>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="nav-menu">
+      <button class="nav-link active" data-sec="home" onclick="openSection('home')">Home</button>
+      <button class="nav-link" data-sec="assessment" onclick="openSection('assessment')">Career Assessment</button>
+      <button class="nav-link" data-sec="domains" onclick="openSection('domains')">Career Domains</button>
+      <button class="nav-link" data-sec="roadmaps" onclick="openSection('roadmaps')">Learning Roadmap</button>
+      <button class="nav-link" data-sec="resources" onclick="openSection('resources')">Learning Resources</button>
+      <button class="nav-link" data-sec="materials" onclick="openSection('materials')">Study Materials</button>
+      <button class="nav-link" data-sec="dashboard" onclick="openSection('dashboard')">Dashboard</button>
+      <button class="nav-link" data-sec="login" onclick="openSection('login')">Login</button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn-get-started" onclick="openSection('assessment')">Get Started</button>
+      <div class="user-avatar-btn" title="Student Profile / Sign In" onclick="openSection('login')">AL</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= 1. HOME VIEW (EXACT HERO AS PER SCREENSHOT) ================= -->
+  <section class="app-section current-view" id="sec-home">
+    <div class="wrap">
+      <div class="hero-grid">
+        <!-- Left Hero Column -->
+        <div class="hero-left">
+          <div class="pill-badge">
+            <span class="tag">MOYU</span>
+            <span class="text">• YOUR CAREER JOURNEY STARTS HERE</span>
+          </div>
+
+          <h1>Not Sure Which <span class="purple">Career Path</span> to Choose? Let's <span class="purple">Figure It Out Together.</span></h1>
+
+          <p class="lead">There are so many career options out there, and choosing one can feel overwhelming. <b>MOYU</b> helps you explore your interests, discover the domains that suit you, and find a clear path to get started.</p>
+
+          <div class="hero-ctas">
+            <button class="btn-find-path" onclick="openSection('assessment')">
+              <span>Find My Career Path</span>
+              <svg class="i"><use href="#i-arrow"/></svg>
+            </button>
+            <button class="btn-explore-domains" onclick="openSection('domains')">Explore Domains</button>
+          </div>
+
+          <div class="trust-check-line">
+            <svg class="i"><use href="#i-check"/></svg>
+            <span>Discover your interests. Learn useful skills. Move forward with confidence.</span>
+          </div>
+        </div>
+
+        <!-- Right Hero Interactive Component -->
+        <div class="hero-card-container">
+          <div class="hc-top-pills">
+            <div class="hc-pill-white">
+              <svg class="i" style="width:14px;height:14px;color:var(--muted);"><use href="#i-code"/></svg>
+              <span>Web Development</span>
+            </div>
+            <div class="hc-pill-white match">
+              <svg class="i" style="width:14px;height:14px;"><use href="#i-sparkle"/></svg>
+              <span>68% Match</span>
+            </div>
+          </div>
+
+          <div class="hc-milestone-card">
+            <div class="hc-ms-head">
+              <div>
+                <span class="hc-kicker">CURRENT GUIDED MILESTONE</span>
+                <h4 class="hc-title">Fundamentals &amp; DOM Tree</h4>
+              </div>
+              <div class="hc-ring">68%</div>
+            </div>
+
+            <div class="hc-meta-row">
+              <span>Web Dev Track • Level 1</span>
+              <span>Stage 2 of 6</span>
+            </div>
+
+            <div class="hc-progress-track">
+              <div class="hc-progress-fill"></div>
+            </div>
+
+            <div class="hc-lesson-box" onclick="openSection('roadmaps')">
+              <div class="hc-lesson-left">
+                <div class="hc-play-icon"><svg class="i" style="width:12px;height:12px;fill:currentColor;"><use href="#i-play"/></svg></div>
+                <div>
+                  <div class="hc-lesson-title">CSS Flexbox &amp; Layouts</div>
+                  <div class="hc-lesson-sub">15 mins remaining</div>
+                </div>
+              </div>
+              <span class="hc-resume-btn">Resume</span>
+            </div>
+          </div>
+
+          <div class="hc-bottom-tags">
+            <div class="hc-tag" onclick="switchDomainAndOpen('aiml')">💼 AI / ML</div>
+            <div class="hc-tag" onclick="switchDomainAndOpen('data')">📊 Data Analytics</div>
+            <div class="hc-tag" onclick="switchDomainAndOpen('cyber')">🛡️ Cybersecurity</div>
+            <div class="hc-tag" onclick="switchDomainAndOpen('design')">🎨 UI/UX Design</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 2. LOGIN PAGE (WITH BLENDED TECH IMAGES & UNCHANGED CONTENT) ================= -->
+  <section class="app-section" id="sec-login">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Student Account</span>
+        <h2 class="h2">Sign In or Create Account</h2>
+        <p class="lead">Save your roadmaps, survey results, and course completion percentages across devices.</p>
+      </div>
+
+      <div class="login-split-card">
+        <!-- Left Column: Blended Tech Art & Code Window -->
+        <div class="login-visual-panel">
+          <div>
+            <div class="pill-badge" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.3);">
+              <span class="tag" style="background:#fff; color:var(--primary);">MOYU</span>
+              <span class="text" style="color:#fff;">• STUDENT TECH PORTAL</span>
+            </div>
+            <h3 style="font-size:24px; font-weight:800; line-height:1.3; color:#fff;">Empowering You to Master Real-World Tech.</h3>
+            <p style="font-size:13px; color:rgba(255,255,255,0.85); margin-top:8px; line-height:1.6;">Access your personalized roadmaps, project checklists, and AI mentorship from any device.</p>
+          </div>
+
+          <!-- Glassmorphism Tech Code Card -->
+          <div class="login-glass-code">
+            <div class="code-dots">
+              <span style="background:#ff5f56;"></span>
+              <span style="background:#ffbd2e;"></span>
+              <span style="background:#27c93f;"></span>
+            </div>
+            <pre><code><span style="color:#eaddff;">const</span> <span style="color:#9bf5c4;">student</span> = <span style="color:#eaddff;">new</span> <span style="color:#fff;font-weight:700;">MoyuStudent</span>({
+  track: <span style="color:#9bf5c4;">"Web Development"</span>,
+  progress: <span style="color:#9bf5c4;">"68% Complete"</span>,
+  status: <span style="color:#9bf5c4;">"Ready to Build"</span>
+});
+<span style="color:#c6b7e2;">// Welcome to your journey!</span></code></pre>
+          </div>
+
+          <!-- Blended Tech Badges -->
+          <div class="login-tech-pills">
+            <span class="login-tech-pill"><svg class="i" style="width:13px;height:13px;"><use href="#i-code"/></svg> Modern Web Stack</span>
+            <span class="login-tech-pill"><svg class="i" style="width:13px;height:13px;"><use href="#i-sparkle"/></svg> AI &amp; ML Tracks</span>
+            <span class="login-tech-pill"><svg class="i" style="width:13px;height:13px;"><use href="#i-check"/></svg> 100% Free for Students</span>
+          </div>
+        </div>
+
+        <!-- Right Column: Exact Unchanged Login & Register Form Contents -->
+        <div class="login-form-panel">
+          <div class="auth-toggle-bar">
+            <div class="auth-toggle-btn active" id="authBtnLogin" onclick="setAuthMode('login')">Sign In</div>
+            <div class="auth-toggle-btn" id="authBtnRegister" onclick="setAuthMode('register')">Register</div>
+          </div>
+
+          <form onsubmit="handleAuthSubmit(event)">
+            <div class="form-group" id="authNameGroup" style="display:none;">
+              <label>Full Name</label>
+              <input type="text" id="authNameInput" placeholder="e.g. Alex Lin">
+            </div>
+            <div class="form-group">
+              <label>College Email</label>
+              <input type="email" id="authEmailInput" placeholder="student@university.edu" required>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="authPassInput" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px;" id="authSubmitText">Sign In</button>
+          </form>
+
+          <button type="button" class="btn btn-soft" style="width:100%; margin-top:12px;" onclick="quickDemoLogin()">⚡ Try as Demo Student (Alex Lin)</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. CAREER ASSESSMENT (SURVEY) ================= -->
+  <section class="app-section" id="sec-assessment">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Interactive Career Matching</span>
+        <h2 class="h2">Discover What Field Fits You Best</h2>
+        <p class="lead">Answer 5 quick questions about what you enjoy building, your preferred style, and goals.</p>
+      </div>
+
+      <div class="survey-card">
+        <div class="survey-bar-track">
+          <div class="survey-bar-fill" id="surveyBarFill"></div>
+        </div>
+
+        <div id="surveyQuizBox">
+          <div class="survey-step-tag" id="surveyStepTag">Question 1 of 5</div>
+          <h3 class="survey-question" id="surveyQuestionText">What kind of problems or projects excite you the most?</h3>
+          <div class="survey-options" id="surveyOptionsContainer"></div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <button class="btn btn-soft btn-sm" id="surveyBackBtn" onclick="prevSurveyQuestion()" style="visibility:hidden">Back</button>
+            <button class="btn btn-primary btn-sm" id="surveyNextBtn" onclick="nextSurveyQuestion()">Next Question <svg class="i"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div class="survey-result" id="surveyResultBox">
+          <span class="badge badge-mint" style="font-size:12px; padding:6px 16px;">Top Match Found</span>
+          <h3 style="font-size:28px; font-weight:800; color:var(--primary);" id="resultTitle">Web Development</h3>
+          <p style="font-size:14px; color:var(--muted); max-width:540px; line-height:1.6;" id="resultDesc">You enjoy creating interactive products people can see and use. Your profile aligns with modern web engineering!</p>
+          
+          <div class="match-banner">
+            <div class="match-stat"><small>Match Fit</small><b id="resultFit">96% Fit</b></div>
+            <div class="match-stat"><small>Est. Duration</small><b>12 - 16 Weeks</b></div>
+            <div class="match-stat"><small>Core Stack</small><b id="resultStack">HTML, CSS, JS, React</b></div>
+          </div>
+
+          <button class="btn btn-primary" onclick="applySurveyAndOpenDomains()">
+            <span>Explore Career Domains</span>
+            <svg class="i"><use href="#i-arrow"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 4. CAREER DOMAINS (WITH TECH IMAGES FOR EACH DOMAIN) ================= -->
+  <section class="app-section" id="sec-domains">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Explore Your Options</span>
+        <h2 class="h2">Career Domains</h2>
+        <p class="lead">Explore the 6 major tech career domains. Select any domain below to set it as your active track for roadmaps and study handbooks.</p>
+      </div>
+
+      <div class="domains-grid" id="domainsGrid">
+        <!-- Populated by JS with rich domain images -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 5. LEARNING ROADMAP ================= -->
+  <section class="app-section" id="sec-roadmaps">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Stage-by-Stage Milestones</span>
+        <h2 class="h2">Learning Roadmap</h2>
+        <p class="lead">Step-by-step milestones breaking your path into practical projects. Check off topics as you finish them!</p>
+      </div>
+
+      <div class="roadmap-active-bar">
+        <div>
+          <span class="badge badge-purple" id="rmDomainBadge">Web Development</span>
+          <h3 style="font-size:20px; font-weight:800; margin-top:4px;" id="rmDomainTitle">Web Development Roadmap</h3>
+          <p style="font-size:13px; color:var(--muted);" id="rmDomainDesc">From HTML basics to interactive deployed portfolio applications.</p>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:28px; font-weight:800; color:var(--primary);" id="rmCompletionPercent">68%</div>
+          <small style="color:var(--muted); font-weight:700;">Progress Completed</small>
+        </div>
+      </div>
+
+      <div class="roadmap-stages" id="roadmapStagesBox"></div>
+    </div>
+  </section>
+
+  <!-- ================= 6. LEARNING RESOURCES ================= -->
+  <section class="app-section" id="sec-resources">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Curated Links</span>
+        <h2 class="h2">Learning Resources</h2>
+        <p class="lead">Verified official documentation, interactive playgrounds, and video courses for students.</p>
+      </div>
+
+      <div class="res-search-box">
+        <svg class="i"><use href="#i-search"/></svg>
+        <input type="text" id="resSearchInput" placeholder="Search platforms (e.g. MDN, Python, SQL, Harvard CS50, Security)..." oninput="filterResources()">
+      </div>
+
+      <div class="res-filter-chips">
+        <button class="res-chip active" onclick="setResourceCategory('all', this)">All Resources</button>
+        <button class="res-chip" onclick="setResourceCategory('docs', this)">Documentation</button>
+        <button class="res-chip" onclick="setResourceCategory('interactive', this)">Interactive Coding</button>
+        <button class="res-chip" onclick="setResourceCategory('video', this)">Video Courses</button>
+        <button class="res-chip" onclick="setResourceCategory('practice', this)">Practice Platforms</button>
+        <button class="res-chip" onclick="setResourceCategory('ai', this)">AI &amp; Data</button>
+      </div>
+
+      <div class="res-grid" id="resourcesGrid"></div>
+    </div>
+  </section>
+
+  <!-- ================= 7. STUDY MATERIALS (WITH TOPIC IMAGES) ================= -->
+  <section class="app-section" id="sec-materials">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Curated Handbooks</span>
+        <h2 class="h2">Study Materials &amp; Cheatsheets</h2>
+        <p class="lead">Bite-sized, practical reference guides with syntax cheatsheets and interview blueprints. Click "Read Handbook" to inspect.</p>
+      </div>
+
+      <div class="materials-grid" id="materialsGrid">
+        <!-- Populated by JS with rich topic images -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 8. DASHBOARD ================= -->
+  <section class="app-section" id="sec-dashboard">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Personalized Learning Space</span>
+        <h2 class="h2">Student Dashboard</h2>
+        <p class="lead">Keep track of your course progress, study streak, and bookmarked materials in one place.</p>
+      </div>
+
+      <div class="dash-layout">
+        <aside class="dash-side">
+          <div>
+            <div class="dash-user-card">
+              <div class="avatar">AL</div>
+              <div>
+                <b style="font-size:14px; display:block;">Alex Lin</b>
+                <small style="color:var(--muted); font-size:12px;">Sophomore • CS Minor</small>
+              </div>
+            </div>
+
+            <div class="dash-track-switcher">
+              <label>Current Track</label>
+              <select class="dash-track-select" id="dashTrackSelector" onchange="switchDomainAndOpen(this.value)">
+                <option value="webdev">Web Development</option>
+                <option value="aiml">AI &amp; Machine Learning</option>
+                <option value="data">Data Analytics</option>
+                <option value="cyber">Cybersecurity</option>
+                <option value="cloud">Cloud Computing</option>
+                <option value="design">UI/UX Design</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="background:var(--lilac-2); border-radius:12px; padding:14px; font-size:12px;">
+            <b style="color:var(--primary); display:block; margin-bottom:4px;">💡 Study Streak</b>
+            <p style="color:var(--muted);">5 Days active this week. Dedicated 45 minutes daily builds muscle memory faster than cramming!</p>
+          </div>
+        </aside>
+
+        <div class="dash-content">
+          <div class="dash-hero-banner">
+            <div>
+              <span class="badge badge-purple" id="dashBannerBadge">Web Development</span>
+              <h3 style="font-size:22px; font-weight:800; margin-top:6px;" id="dashBannerTitle">Frontend &amp; Full-Stack Track</h3>
+              <p style="font-size:13px; color:var(--muted); margin-top:4px;">Master semantic HTML5, responsive CSS layouts, and modern JavaScript workflows.</p>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:32px; font-weight:800; color:var(--primary);" id="dashBannerPercent">68%</div>
+              <small style="color:var(--muted); font-weight:600;">Track Completion</small>
+            </div>
+          </div>
+
+          <div class="dash-stats-row">
+            <div class="dash-stat-box">
+              <small>Completed Topics</small>
+              <div class="val" id="dashDoneCount">4/6</div>
+            </div>
+            <div class="dash-stat-box">
+              <small>Study Streak</small>
+              <div class="val">5 Days 🔥</div>
+            </div>
+            <div class="dash-stat-box">
+              <small>Saved Links</small>
+              <div class="val" id="dashSavedCount">2</div>
+            </div>
+            <div class="dash-stat-box">
+              <small>Next Milestone</small>
+              <div class="val" style="font-size:15px; margin-top:8px;">JS DOM Basics</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FLOATING AI MENTOR WIDGET -->
+<div class="ai-trigger" onclick="toggleAIChat()">
+  <svg class="i" style="width:18px;height:18px;"><use href="#i-bot"/></svg>
+  <span>Ask AI Mentor</span>
+</div>
+
+<div class="ai-drawer" id="aiDrawer">
+  <div class="ai-head">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <div style="width:28px; height:28px; border-radius:8px; background:rgba(255,255,255,.2); display:grid; place-items:center; font-size:14px;">🤖</div>
+      <b>MOYU AI Mentor</b>
+    </div>
+    <div style="cursor:pointer;" onclick="toggleAIChat()"><svg class="i"><use href="#i-close"/></svg></div>
+  </div>
+
+  <div class="ai-msgs" id="aiChatMsgs">
+    <div class="ai-bubble bot">
+      Hi! I am your MOYU AI Mentor. Ask me any question about career domains, coding doubts, or college internship tips!
+    </div>
+  </div>
+
+  <div class="ai-input-bar">
+    <input type="text" id="aiChatInput" placeholder="Type your doubt..." onkeydown="if(event.key==='Enter') sendAIChatMessage()">
+    <button class="btn btn-primary btn-sm" onclick="sendAIChatMessage()"><svg class="i"><use href="#i-send"/></svg></button>
+  </div>
+</div>
+
+<!-- IN-APP READER MODAL -->
+<div class="reader-modal" id="readerModal">
+  <div class="reader-box">
+    <div class="reader-head">
+      <div>
+        <span class="eyebrow" id="readerDomainTag">Web Development</span>
+        <h3 id="readerTitle" style="font-size:18px; font-weight:800; margin-top:2px;">Handbook Title</h3>
+      </div>
+      <button class="btn btn-soft btn-sm" onclick="closeReaderModal()"><svg class="i"><use href="#i-close"/></svg> Close</button>
+    </div>
+    <div class="reader-body" id="readerContentBody"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="wrap footer-row">
+    <div>
+      <b style="color:#fff; font-size:16px;">MOYU</b> — Find Your Way.
+      <span style="display:block; color:var(--muted); font-size:11px; margin-top:2px;">Tech Career Guidance Platform for College Students</span>
+    </div>
+    <div style="display:flex; gap:16px;">
+      <a href="javascript:void(0)" onclick="openSection('home')">Home</a>
+      <a href="javascript:void(0)" onclick="openSection('assessment')">Career Assessment</a>
+      <a href="javascript:void(0)" onclick="openSection('domains')">Career Domains</a>
+      <a href="javascript:void(0)" onclick="openSection('roadmaps')">Learning Roadmap</a>
+      <a href="javascript:void(0)" onclick="openSection('resources')">Learning Resources</a>
+      <a href="javascript:void(0)" onclick="openSection('dashboard')">Dashboard</a>
+      <a href="javascript:void(0)" onclick="openSection('login')">Login</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+/* ==========================================================================
+   1. STRICT SINGLE VIEW PAGE NAVIGATION
+   ========================================================================== */
+
+function openSection(secId) {
+  // Hide all sections
+  document.querySelectorAll('.app-section').forEach(sec => {
+    sec.classList.remove('current-view');
+  });
+
+  // Show only target section
+  const target = document.getElementById(`sec-${secId}`);
+  if (target) {
+    target.classList.add('current-view');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Update navbar links
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.toggle('active', link.dataset.sec === secId);
+  });
+
+  window.history.replaceState(null, '', `#${secId}`);
+}
+
+window.addEventListener('popstate', () => {
+  const hash = window.location.hash.replace('#', '') || 'home';
+  openSection(hash);
+});
+
+/* ==========================================================================
+   2. DOMAINS DATA WITH HIGH-QUALITY TECH IMAGES
+   ========================================================================== */
+
+const DOMAINS_DATA = [
+  {
+    key: "webdev",
+    name: "Web Development",
+    desc: "Build modern, accessible websites and interactive web applications using HTML, CSS, JavaScript, and React.",
+    tags: ["HTML5", "CSS Grid", "JavaScript", "React", "REST APIs"],
+    roles: "Front-End Developer, Full-Stack Engineer",
+    img: "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    key: "aiml",
+    name: "AI & Machine Learning",
+    desc: "Train predictive models, explore neural networks, and integrate large language models with Python.",
+    tags: ["Python", "NumPy", "Pandas", "Scikit-Learn", "Prompt Engineering"],
+    roles: "ML Engineer, AI Research Assistant",
+    img: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    key: "data",
+    name: "Data Analytics",
+    desc: "Query relational databases with SQL, build interactive BI dashboards, and turn raw figures into business strategies.",
+    tags: ["SQL", "Excel", "Tableau", "PowerBI", "Data Cleaning"],
+    roles: "Data Analyst, Business Intelligence Specialist",
+    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    key: "cyber",
+    name: "Cybersecurity",
+    desc: "Defend digital infrastructure, analyze network traffic packets, audit web vulnerabilities, and configure Linux servers.",
+    tags: ["Networking", "Linux CLI", "Wireshark", "OWASP Top 10", "Security+"],
+    roles: "SOC Analyst, Junior Penetration Tester",
+    img: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    key: "cloud",
+    name: "Cloud Computing",
+    desc: "Deploy, scale, and automate cloud infrastructure using AWS, Docker containers, and CI/CD pipelines.",
+    tags: ["AWS Core", "Docker", "Linux", "CI/CD", "DevOps"],
+    roles: "Cloud Practitioner, DevOps Apprentice",
+    img: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=700&q=80"
+  },
+  {
+    key: "design",
+    name: "UI/UX Design",
+    desc: "Design intuitive user journeys, wireframes, and scalable design systems in Figma with real usability tests.",
+    tags: ["Figma", "Wireframes", "Design Systems", "User Research", "Prototyping"],
+    roles: "UI Designer, Product Designer",
+    img: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=700&q=80"
+  }
+];
+
+let selectedDomain = "webdev";
+
+function renderDomainsGrid() {
+  const grid = document.getElementById('domainsGrid');
+  grid.innerHTML = '';
+
+  DOMAINS_DATA.forEach(d => {
+    const isSelected = d.key === selectedDomain;
+    const card = document.createElement('div');
+    card.className = `domain-card ${isSelected ? 'selected-domain' : ''}`;
+    card.onclick = () => {
+      selectDomain(d.key);
+      openSection('roadmaps');
+    };
+    card.innerHTML = `
+      <div class="domain-img-box">
+        <img src="${d.img}" alt="${d.name}" loading="lazy">
+        <div class="domain-img-overlay"></div>
+        <span class="domain-img-badge">${isSelected ? 'Active Track ✓' : 'Select Track'}</span>
+      </div>
+      <div class="domain-body">
+        <div>
+          <h3>${d.name}</h3>
+          <p style="margin-top:6px;">${d.desc}</p>
+          <div class="domain-tags" style="margin-top:14px;">
+            ${d.tags.map(t => `<span class="domain-tag">${t}</span>`).join('')}
+          </div>
+        </div>
+        <div style="font-size:12px; color:var(--muted); border-top:1px solid var(--line); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+          <span><b>Roles:</b> ${d.roles}</span>
+          <span style="color:var(--primary); font-weight:800;">View Roadmap →</span>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function selectDomain(key) {
+  selectedDomain = key;
+  renderDomainsGrid();
+  renderRoadmapFor(key);
+
+  const domainObj = DOMAINS_DATA.find(d => d.key === key) || DOMAINS_DATA[0];
+  document.getElementById('dashBannerBadge').textContent = domainObj.name;
+  document.getElementById('dashBannerTitle').textContent = `${domainObj.name} Track`;
+  document.getElementById('dashTrackSelector').value = key;
+}
+
+function switchDomainAndOpen(key) {
+  selectDomain(key);
+  openSection('roadmaps');
+}
+
+/* ==========================================================================
+   3. SURVEY DATA & LOGIC
+   ========================================================================== */
+
+const SURVEY_QUESTIONS = [
+  {
+    q: "What kind of problems or projects excite you the most?",
+    options: [
+      { text: "Building websites, apps, and interactive web tools people can use", track: "webdev", weight: 3 },
+      { text: "Training intelligent computer models, language algorithms, and predictive systems", track: "aiml", weight: 3 },
+      { text: "Uncovering trends in numbers, statistics, and business charts", track: "data", weight: 3 },
+      { text: "Defending networks, stopping unauthorized intrusions, and security testing", track: "cyber", weight: 3 },
+      { text: "Designing clean, intuitive, and aesthetic interfaces and user journeys in Figma", track: "design", weight: 3 }
+    ]
+  },
+  {
+    q: "What is your current coding background or experience level?",
+    options: [
+      { text: "Complete beginner – ready to build my first projects from scratch", track: "webdev", weight: 1 },
+      { text: "Know some HTML/CSS or basic Python scripts from college coursework", track: "webdev", weight: 2 },
+      { text: "Enjoy math, statistics, and logical puzzle solving", track: "aiml", weight: 2 },
+      { text: "More fascinated by visual aesthetics, color harmony, and UX design", track: "design", weight: 3 }
+    ]
+  },
+  {
+    q: "How do you prefer to see the tangible results of your work?",
+    options: [
+      { text: "Visually on screen – clicking buttons, responsive layouts, live websites", track: "webdev", weight: 3 },
+      { text: "Through charts, accuracy scores, predictions, and automated insights", track: "aiml", weight: 3 },
+      { text: "Interactive dashboards with filters that help leaders make informed decisions", track: "data", weight: 3 },
+      { text: "A secure terminal, hardened firewall, and stopping attack logs", track: "cyber", weight: 3 }
+    ]
+  },
+  {
+    q: "What is your primary goal for this academic year?",
+    options: [
+      { text: "Build a standout portfolio of web projects to land summer internships", track: "webdev", weight: 2 },
+      { text: "Participate in AI hackathons and learn generative machine learning", track: "aiml", weight: 2 },
+      { text: "Earn practical certifications (Security+, AWS Cloud, or SQL)", track: "cyber", weight: 2 },
+      { text: "Build a freelance design portfolio with Figma case studies", track: "design", weight: 2 }
+    ]
+  },
+  {
+    q: "Which tech stack or work environment sounds most appealing to you?",
+    options: [
+      { text: "JavaScript, React, browser inspector, and responsive CSS", track: "webdev", weight: 3 },
+      { text: "Python Jupyter notebooks, Scikit-learn, and neural network models", track: "aiml", weight: 3 },
+      { text: "SQL queries, relational databases, and business dashboards", track: "data", weight: 3 },
+      { text: "Linux terminals, network packet sniffers, and vulnerability scanners", track: "cyber", weight: 3 }
+    ]
+  }
+];
+
+let surveyCurrentIndex = 0;
+let surveyUserAnswers = [];
+
+function initSurvey() {
+  surveyCurrentIndex = 0;
+  surveyUserAnswers = [];
+  renderSurveyQuestion();
+}
+
+function renderSurveyQuestion() {
+  const qData = SURVEY_QUESTIONS[surveyCurrentIndex];
+  document.getElementById('surveyStepTag').textContent = `Question ${surveyCurrentIndex + 1} of ${SURVEY_QUESTIONS.length}`;
+  document.getElementById('surveyQuestionText').textContent = qData.q;
+  
+  const progressPercent = Math.round(((surveyCurrentIndex + 1) / SURVEY_QUESTIONS.length) * 100);
+  document.getElementById('surveyBarFill').style.width = `${progressPercent}%`;
+
+  const optContainer = document.getElementById('surveyOptionsContainer');
+  optContainer.innerHTML = '';
+
+  const prevAnswer = surveyUserAnswers[surveyCurrentIndex];
+
+  qData.options.forEach((opt, idx) => {
+    const isSelected = prevAnswer === idx;
+    const optEl = document.createElement('div');
+    optEl.className = `survey-opt ${isSelected ? 'selected' : ''}`;
+    optEl.onclick = () => {
+      surveyUserAnswers[surveyCurrentIndex] = idx;
+      renderSurveyQuestion();
+    };
+    optEl.innerHTML = `
+      <input type="radio" name="sq_${surveyCurrentIndex}" ${isSelected ? 'checked' : ''}>
+      <b>${opt.text}</b>
+    `;
+    optContainer.appendChild(optEl);
+  });
+
+  document.getElementById('surveyBackBtn').style.visibility = surveyCurrentIndex > 0 ? 'visible' : 'hidden';
+  document.getElementById('surveyNextBtn').textContent = surveyCurrentIndex === SURVEY_QUESTIONS.length - 1 ? 'See Recommendations 🎯' : 'Next Question →';
+}
+
+function nextSurveyQuestion() {
+  if (surveyUserAnswers[surveyCurrentIndex] === undefined) {
+    alert("Please select an answer to continue!");
+    return;
+  }
+
+  if (surveyCurrentIndex < SURVEY_QUESTIONS.length - 1) {
+    surveyCurrentIndex++;
+    renderSurveyQuestion();
+  } else {
+    computeSurveyMatch();
+  }
+}
+
+function prevSurveyQuestion() {
+  if (surveyCurrentIndex > 0) {
+    surveyCurrentIndex--;
+    renderSurveyQuestion();
+  }
+}
+
+function computeSurveyMatch() {
+  const scores = { webdev: 0, aiml: 0, data: 0, cyber: 0, design: 0 };
+  surveyUserAnswers.forEach((ansIdx, qIdx) => {
+    const opt = SURVEY_QUESTIONS[qIdx].options[ansIdx];
+    if (opt && opt.track) {
+      scores[opt.track] = (scores[opt.track] || 0) + (opt.weight || 2);
+    }
+  });
+
+  let best = "webdev";
+  let max = -1;
+  for (const [k, v] of Object.entries(scores)) {
+    if (v > max) {
+      max = v;
+      best = k;
+    }
+  }
+
+  selectedDomain = best;
+  const domainObj = DOMAINS_DATA.find(d => d.key === best) || DOMAINS_DATA[0];
+
+  document.getElementById('surveyQuizBox').style.display = 'none';
+  const resBox = document.getElementById('surveyResultBox');
+  resBox.classList.add('show');
+
+  document.getElementById('resultTitle').textContent = domainObj.name;
+  document.getElementById('resultDesc').textContent = domainObj.desc;
+  document.getElementById('resultStack').textContent = domainObj.tags.slice(0, 4).join(', ');
+}
+
+function applySurveyAndOpenDomains() {
+  selectDomain(selectedDomain);
+  openSection('domains');
+}
+
+/* ==========================================================================
+   4. LEARNING ROADMAPS
+   ========================================================================== */
+
+const ROADMAPS_DATA = {
+  webdev: [
+    { step: 1, title: "Foundation: HTML5 & Page Semantics", time: "2-3 Weeks", level: "Beginner", desc: "Learn to build properly structured, accessible websites using modern semantic HTML elements.", topics: ["Semantic tags (<header>, <main>)", "Forms & input validation", "Web accessibility (a11y)"], proj: "Personal Profile & Bio Page" },
+    { step: 2, title: "Styling: CSS Layouts, Flexbox & Grid", time: "3-4 Weeks", level: "Beginner", desc: "Transform plain HTML into responsive, aesthetically polished interfaces across desktop and mobile.", topics: ["Flexbox container properties", "CSS Grid 2D layout systems", "Responsive media queries"], proj: "Responsive Product Showcase Grid" },
+    { step: 3, title: "Interactivity: JavaScript & DOM", time: "4-5 Weeks", level: "Intermediate", desc: "Add dynamic behavior, handle user inputs, manage local state, and manipulate web page elements.", topics: ["ES6 syntax (let/const, arrows)", "Event listeners & form validation", "LocalStorage persistence"], proj: "Interactive Task & Milestone Tracker" },
+    { step: 4, title: "Connecting Data: REST APIs & Asynchronous JS", time: "3-4 Weeks", level: "Intermediate", desc: "Communicate with backend servers, load external data dynamically, and handle loading/error states.", topics: ["Promises and async/await syntax", "Fetch API & JSON handling", "Third-party APIs"], proj: "Real-Time Weather & Transit Search App" },
+    { step: 5, title: "Component Architecture: React Fundamentals", time: "4-5 Weeks", level: "Advanced", desc: "Build modular web applications using reusable component hierarchies and state management.", topics: ["JSX & component props", "useState & useEffect hooks", "Tailwind CSS styling"], proj: "Student Club Event Platform" },
+    { step: 6, title: "Portfolio Polish, Git & Career Deployment", time: "2-3 Weeks", level: "Capstone", desc: "Host production code on GitHub, deploy to custom domains, and prepare for internships.", topics: ["Git branching & PRs", "Vercel / Netlify deployment", "Resume project showcases"], proj: "Live Deployed Custom Portfolio" }
+  ],
+  aiml: [
+    { step: 1, title: "Python Programming & Data Structures", time: "3 Weeks", level: "Beginner", desc: "Master the standard programming language of AI and data science.", topics: ["Python loops & functions", "Lists, dictionaries & sets", "Reading CSV files"], proj: "Student Grade & GPA Analyzer Script" },
+    { step: 2, title: "Numerical Python & Data Wrangling", time: "3-4 Weeks", level: "Beginner", desc: "Clean, reshape, and extract insights from real-world datasets.", topics: ["NumPy operations", "Pandas DataFrame manipulation", "Exploratory Data Analysis"], proj: "Housing Market Data Exploration Notebook" },
+    { step: 3, title: "Classical Machine Learning Algorithms", time: "4-5 Weeks", level: "Intermediate", desc: "Implement core algorithms for predictive modeling using Scikit-Learn.", topics: ["Linear & Logistic Regression", "Decision Trees & Random Forests", "Train/Test split"], proj: "Student Exam Score Predictor" },
+    { step: 4, title: "Deep Learning & Neural Networks", time: "4-5 Weeks", level: "Advanced", desc: "Explore multi-layer neural networks, computer vision, and NLP basics.", topics: ["Neural network architectures", "PyTorch basics", "Convolutional Neural Networks"], proj: "Handwritten Digit Classifier (MNIST)" },
+    { step: 5, title: "Applied AI, LLMs & API Integration", time: "3 Weeks", level: "Capstone", desc: "Build production AI apps integrating generative models and vector search.", topics: ["Prompt engineering", "Calling LLM APIs", "Streamlit web apps"], proj: "AI College Study Bot with Web Interface" }
+  ],
+  data: [
+    { step: 1, title: "Spreadsheet Analytics & Core Metrics", time: "2-3 Weeks", level: "Beginner", desc: "Master formulas, pivot tables, and statistical summaries in Excel.", topics: ["XLOOKUP formulas", "Pivot tables & charts", "Data hygiene"], proj: "College Budget & Expense Dashboard" },
+    { step: 2, title: "Relational Databases & SQL Queries", time: "4 Weeks", level: "Intermediate", desc: "Query, join, filter, and summarize enterprise databases with SQL.", topics: ["SELECT, WHERE, ORDER BY", "Multiple table JOINs", "Aggregations (COUNT, SUM)"], proj: "E-Commerce Customer Sales SQL Analysis" },
+    { step: 3, title: "Business Intelligence & Visual Reporting", time: "3-4 Weeks", level: "Intermediate", desc: "Create interactive visual dashboards that stakeholders love.", topics: ["Tableau / PowerBI fundamentals", "KPI cards & drill-down filters", "Color theory"], proj: "Global Superstore Executive Dashboard" },
+    { step: 4, title: "Data Storytelling & Case Studies", time: "2 Weeks", level: "Capstone", desc: "Turn raw metrics into compelling narratives with actionable takeaways.", topics: ["Translating numbers to business actions", "A/B testing basics", "Portfolio case study"], proj: "End-to-End Analytics Case Study Deck" }
+  ],
+  cyber: [
+    { step: 1, title: "Computer Networking & Protocols", time: "3-4 Weeks", level: "Beginner", desc: "Understand how computers transmit data safely across local and global networks.", topics: ["OSI 7-layer & TCP/IP", "Subnetting & IPv4/IPv6", "DNS, DHCP, HTTP, SSH"], proj: "Packet Capture & Protocol Inspection Report" },
+    { step: 2, title: "Linux OS Mastery & System Administration", time: "3-4 Weeks", level: "Beginner", desc: "Navigate Linux environments, configure services, and manage permissions.", topics: ["Bash commands & pipes", "File permissions & sudo", "SSH key authentication"], proj: "Hardened Ubuntu Server Configuration" },
+    { step: 3, title: "Web Vulnerabilities & OWASP Top 10", time: "4-5 Weeks", level: "Intermediate", desc: "Analyze how web applications get hacked and how developers patch them.", topics: ["SQL Injection (SQLi)", "Cross-Site Scripting (XSS)", "Burp Suite basics"], proj: "Vulnerable Web App Audit & Remediation" },
+    { step: 4, title: "Hands-on CTF Challenges & Defense", time: "4 Weeks", level: "Advanced", desc: "Practice ethical hacking labs on OverTheWire, TryHackMe, and HackTheBox.", topics: ["Bandit Linux wargames", "Port scanning with Nmap", "Hash cracking basics"], proj: "TryHackMe Pre-Security Path Certificate" }
+  ],
+  cloud: [
+    { step: 1, title: "Cloud Concepts & AWS Core Services", time: "3 Weeks", level: "Beginner", desc: "Understand cloud architecture, serverless paradigms, and object storage.", topics: ["AWS Free Tier exploration", "EC2 virtual compute", "S3 buckets & static hosting"], proj: "Cloud-Hosted Static Web Application" },
+    { step: 2, title: "Containers & Docker Workflows", time: "3-4 Weeks", level: "Intermediate", desc: "Package applications with dependencies for consistent cloud runs.", topics: ["Writing Dockerfiles", "Container image registries", "Docker Compose"], proj: "Containerized Full-Stack Web App" },
+    { step: 3, title: "Cloud Networking, VPC & Security", time: "4 Weeks", level: "Intermediate", desc: "Design secure cloud networks with subnets and load balancers.", topics: ["Virtual Private Clouds (VPCs)", "Internet Gateways", "Application Load Balancers"], proj: "Multi-Tier High-Availability Cloud Setup" },
+    { step: 4, title: "Automated CI/CD & Certification", time: "3-4 Weeks", level: "Capstone", desc: "Build automated deployment pipelines and prepare for AWS Cloud Practitioner.", topics: ["GitHub Actions workflow scripts", "Zero-downtime deployments", "AWS exam prep"], proj: "Automated GitHub Actions Cloud Pipeline" }
+  ],
+  design: [
+    { step: 1, title: "Visual Design Foundations", time: "2-3 Weeks", level: "Beginner", desc: "Learn visual hierarchy, accessible typography, and color psychology.", topics: ["8px grid system", "Type pairing & readability", "Color harmony (WCAG)"], proj: "Mobile Landing Page Redesign" },
+    { step: 2, title: "Figma Mastery & Auto-Layout", time: "3-4 Weeks", level: "Intermediate", desc: "Create robust, responsive UI layouts that resize effortlessly.", topics: ["Frames vs Groups", "Auto-layout nested structures", "Reusable components"], proj: "Responsive Product Card System" },
+    { step: 3, title: "UX Research, Wireframes & Testing", time: "3-4 Weeks", level: "Intermediate", desc: "Solve real user problems starting with user research and low-fidelity sketches.", topics: ["User personas & empathy maps", "Low-fidelity wireframing", "Usability testing"], proj: "Campus Food Delivery App Wireframe" },
+    { step: 4, title: "Design System & Interactive Prototypes", time: "3 Weeks", level: "Capstone", desc: "Build a complete design system and showcase interactive prototypes.", topics: ["Figma Variables & Tokens", "Smart Animate micro-interactions", "Developer handoff"], proj: "Full Interactive SaaS App Case Study" }
+  ]
+};
+
+let checkedTopics = JSON.parse(localStorage.getItem('moyu_checked_topics')) || {};
+
+function renderRoadmapFor(domainKey) {
+  const domainObj = DOMAINS_DATA.find(d => d.key === domainKey) || DOMAINS_DATA[0];
+  document.getElementById('rmDomainBadge').textContent = domainObj.name;
+  document.getElementById('rmDomainTitle').textContent = `${domainObj.name} Roadmap`;
+  document.getElementById('rmDomainDesc').textContent = domainObj.desc;
+
+  const stages = ROADMAPS_DATA[domainKey] || ROADMAPS_DATA.webdev;
+  const container = document.getElementById('roadmapStagesBox');
+  container.innerHTML = '';
+
+  let totalTopics = 0;
+  let doneTopics = 0;
+
+  stages.forEach((stage, idx) => {
+    const stageEl = document.createElement('div');
+    stageEl.className = `stage-box ${idx === 0 ? 'current-step' : ''}`;
+
+    let topicsHtml = '';
+    stage.topics.forEach((top, tIdx) => {
+      totalTopics++;
+      const topKey = `${domainKey}_s${stage.step}_t${tIdx}`;
+      const isChecked = !!checkedTopics[topKey];
+      if (isChecked) doneTopics++;
+
+      topicsHtml += `
+        <span class="stage-topic-pill ${isChecked ? 'checked' : ''}" onclick="toggleTopicDone('${topKey}')">
+          <svg class="i" style="width:10px;height:10px;"><use href="#i-check"/></svg>
+          ${top}
+        </span>
+      `;
+    });
+
+    stageEl.innerHTML = `
+      <div class="stage-num">${stage.step}</div>
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <h4 style="font-size:18px; font-weight:800;">${stage.title}</h4>
+          <span class="badge ${idx === 0 ? 'badge-mint' : 'badge-purple'}">${stage.level} • ~${stage.time}</span>
+        </div>
+        <p style="font-size:13px; color:var(--muted); margin:6px 0 10px;">${stage.desc}</p>
+        <div class="stage-topics-row">${topicsHtml}</div>
+        <div class="stage-capstone"><b>🎯 Milestone Project:</b> ${stage.proj}</div>
+      </div>
+    `;
+    container.appendChild(stageEl);
+  });
+
+  const percent = totalTopics > 0 ? Math.round((doneTopics / totalTopics) * 100) : 68;
+  document.getElementById('rmCompletionPercent').textContent = `${percent}%`;
+}
+
+function toggleTopicDone(topKey) {
+  checkedTopics[topKey] = !checkedTopics[topKey];
+  localStorage.setItem('moyu_checked_topics', JSON.stringify(checkedTopics));
+  renderRoadmapFor(selectedDomain);
+}
+
+/* ==========================================================================
+   5. STUDY MATERIALS DATA WITH TOPIC IMAGES
+   ========================================================================== */
+
+const STUDY_MATERIALS = [
+  {
+    id: "mat-webdev",
+    domain: "Web Development",
+    title: "HTML5, CSS & Modern JS Cheatsheet",
+    desc: "Essential tags, modern Flexbox/Grid syntax cheatsheet, and ES6+ methods you'll use every day.",
+    img: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=700&q=80",
+    content: `
+      <h2>HTML5, Modern CSS & JavaScript Quick Handbook</h2>
+      <h3>1. Semantic HTML Structure</h3>
+      <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;My Portfolio&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;header&gt;&lt;nav&gt;...&lt;/nav&gt;&lt;/header&gt;
+    &lt;main&gt;&lt;section&gt;...&lt;/section&gt;&lt;/main&gt;
+    &lt;footer&gt;...&lt;/footer&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+      <h3>2. Centering in Modern CSS</h3>
+      <pre>.center-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}</pre>
+    `
+  },
+  {
+    id: "mat-aiml",
+    domain: "AI & Machine Learning",
+    title: "Python for AI & NumPy Primer",
+    desc: "Vectors, array slicing, data wrangling with Pandas, and evaluating machine learning models.",
+    img: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=700&q=80",
+    content: `
+      <h2>Python for AI &amp; Machine Learning Primer</h2>
+      <pre>import numpy as np
+arr = np.array([1, 2, 3, 4, 5])
+doubled = arr * 2</pre>
+    `
+  },
+  {
+    id: "mat-git",
+    domain: "Developer Tools",
+    title: "Git & GitHub Command Vault",
+    desc: "The essential commands to commit, branch, merge, stash, and resolve conflicts cleanly.",
+    img: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=700&q=80",
+    content: `
+      <h2>Git &amp; GitHub Command Vault</h2>
+      <pre>git init
+git add .
+git commit -m "feat: added responsive navigation bar"
+git push origin main</pre>
+    `
+  },
+  {
+    id: "mat-sql",
+    domain: "Data Analytics",
+    title: "SQL Relational Queries Handbook",
+    desc: "Mastering SELECT, JOINs, aggregations, GROUP BY, and window functions for analytics interviews.",
+    img: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=700&q=80",
+    content: `
+      <h2>SQL Relational Queries Handbook</h2>
+      <pre>SELECT first_name, email, graduation_year
+FROM students
+WHERE track = 'Web Development'
+ORDER BY gpa DESC LIMIT 10;</pre>
+    `
+  },
+  {
+    id: "mat-security",
+    domain: "Cybersecurity",
+    title: "Networking & Security Essentials",
+    desc: "OSI layers, TCP/UDP ports cheatsheet, and the OWASP Top 10 vulnerabilities explained.",
+    img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=700&q=80",
+    content: `
+      <h2>Networking &amp; Web Security Essentials</h2>
+      <ul>
+        <li><b>Port 22:</b> SSH</li>
+        <li><b>Port 80:</b> HTTP</li>
+        <li><b>Port 443:</b> HTTPS</li>
+      </ul>
+    `
+  },
+  {
+    id: "mat-interview",
+    domain: "Career Preparation",
+    title: "Student Resume & Portfolio Blueprint",
+    desc: "How to showcase projects using the STAR method, build an impressive GitHub profile, and prepare for interviews.",
+    img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=700&q=80",
+    content: `
+      <h2>Student Resume &amp; Portfolio Blueprint</h2>
+      <p>Use the <b>STAR</b> method: [Action Verb] + [What you built] + [Impact / Outcome].</p>
+    `
+  }
+];
+
+function renderMaterials() {
+  const container = document.getElementById('materialsGrid');
+  container.innerHTML = '';
+
+  STUDY_MATERIALS.forEach(mat => {
+    const card = document.createElement('article');
+    card.className = 'material-card';
+    card.innerHTML = `
+      <div class="material-img-box">
+        <img src="${mat.img}" alt="${mat.title}" loading="lazy">
+        <div class="material-img-overlay"></div>
+        <span class="material-domain-pill">${mat.domain}</span>
+      </div>
+      <div class="material-body">
+        <div>
+          <h3>${mat.title}</h3>
+          <p style="margin-top:6px;">${mat.desc}</p>
+        </div>
+        <button class="btn btn-soft btn-sm" onclick="openReader('${mat.id}')">Read Handbook <svg class="i"><use href="#i-arrow"/></svg></button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function openReader(matId) {
+  const mat = STUDY_MATERIALS.find(m => m.id === matId);
+  if (!mat) return;
+  document.getElementById('readerDomainTag').textContent = mat.domain;
+  document.getElementById('readerTitle').textContent = mat.title;
+  document.getElementById('readerContentBody').innerHTML = mat.content;
+  document.getElementById('readerModal').classList.add('open');
+}
+
+function closeReaderModal() {
+  document.getElementById('readerModal').classList.remove('open');
+}
+
+/* ==========================================================================
+   6. FREE RESOURCES
+   ========================================================================== */
+
+const FREE_RESOURCES = [
+  { title: "MDN Web Docs", cat: "docs", badge: "Free", url: "https://developer.mozilla.org/", domain: "Web Dev", desc: "The gold-standard reference for HTML, CSS, and modern JavaScript syntax." },
+  { title: "freeCodeCamp", cat: "interactive", badge: "100% Free", url: "https://www.freecodecamp.org/", domain: "Web Dev / Python", desc: "Hands-on browser challenges teaching coding from simple markup to full certifications." },
+  { title: "The Odin Project", cat: "interactive", badge: "Free", url: "https://www.theodinproject.com/", domain: "Full-Stack", desc: "A comprehensive open-source full-stack curriculum with real project portfolios." },
+  { title: "JavaScript.info", cat: "docs", badge: "Free", url: "https://javascript.info/", domain: "JavaScript", desc: "From variables to advanced closures and asynchronous event loops explained clearly." },
+  { title: "Harvard CS50x", cat: "video", badge: "Free Course", url: "https://cs50.harvard.edu/x/", domain: "Computer Science", desc: "Harvard's legendary introduction to computer science, algorithms, and web programming." },
+  { title: "Frontend Mentor", cat: "practice", badge: "Free Tier", url: "https://www.frontendmentor.io/", domain: "Frontend", desc: "Professional Figma design mockups you can turn into live web pages for your portfolio." },
+  { title: "Kaggle Learn", cat: "ai", badge: "100% Free", url: "https://www.kaggle.com/learn", domain: "AI / Data", desc: "Micro-courses teaching Python, Pandas, and Machine Learning in interactive notebooks." },
+  { title: "Fast.ai Deep Learning", cat: "ai", badge: "Free Course", url: "https://course.fast.ai/", domain: "Machine Learning", desc: "World-renowned top-down deep learning course for programmers, building real models." },
+  { title: "OverTheWire Bandit", cat: "practice", badge: "100% Free", url: "https://overthewire.org/wargames/bandit/", domain: "Cybersecurity", desc: "Gamified SSH wargame to learn Linux command line and security basics step by step." },
+  { title: "Roadmap.sh", cat: "docs", badge: "Free", url: "https://roadmap.sh/", domain: "Career Guides", desc: "Community-driven visual learning roadmaps for Frontend, Backend, DevOps, and AI." },
+  { title: "Figma for Education", cat: "practice", badge: "Free for Students", url: "https://www.figma.com/education/", domain: "UI/UX Design", desc: "Free Figma Professional accounts for students to build wireframes and UI prototypes." }
+];
+
+let activeResourceCat = 'all';
+let bookmarkedUrls = JSON.parse(localStorage.getItem('moyu_bookmarks')) || ["https://developer.mozilla.org/"];
+
+function renderResources(items) {
+  const grid = document.getElementById('resourcesGrid');
+  grid.innerHTML = '';
+  const savedSet = new Set(bookmarkedUrls);
+
+  items.forEach(res => {
+    const isSaved = savedSet.has(res.url);
+    const card = document.createElement('article');
+    card.className = 'res-card';
+    card.innerHTML = `
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="badge badge-mint">${res.badge}</span>
+          <span style="font-size:11px; color:var(--muted); font-weight:700;">${res.domain}</span>
+        </div>
+        <h3 style="font-size:17px; font-weight:800; margin-top:8px;">${res.title}</h3>
+        <p style="font-size:12px; color:var(--muted); line-height:1.5; margin-top:4px;">${res.desc}</p>
+      </div>
+      <div class="res-card-bottom">
+        <a href="${res.url}" target="_blank" rel="noopener noreferrer" class="btn btn-soft btn-sm">
+          Visit Platform <svg class="i" style="width:12px;height:12px;"><use href="#i-ext"/></svg>
+        </a>
+        <button class="btn-bookmark ${isSaved ? 'saved' : ''}" onclick="toggleBookmark('${res.url}', this)" title="${isSaved ? 'Bookmarked' : 'Save'}">
+          <svg class="i" style="fill:${isSaved ? '#f59e0b' : 'none'}"><use href="#i-star"/></svg>
+        </button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function filterResources() {
+  const query = document.getElementById('resSearchInput').value.toLowerCase().trim();
+  const filtered = FREE_RESOURCES.filter(r => {
+    const matchCat = activeResourceCat === 'all' || r.cat === activeResourceCat;
+    const matchQuery = !query || r.title.toLowerCase().includes(query) || r.desc.toLowerCase().includes(query) || r.domain.toLowerCase().includes(query);
+    return matchCat && matchQuery;
+  });
+  renderResources(filtered);
+}
+
+function setResourceCategory(cat, btnEl) {
+  activeResourceCat = cat;
+  document.querySelectorAll('.res-chip').forEach(b => b.classList.remove('active'));
+  btnEl.classList.add('active');
+  filterResources();
+}
+
+function toggleBookmark(url, btnEl) {
+  if (bookmarkedUrls.includes(url)) {
+    bookmarkedUrls = bookmarkedUrls.filter(u => u !== url);
+  } else {
+    bookmarkedUrls.push(url);
+  }
+  localStorage.setItem('moyu_bookmarks', JSON.stringify(bookmarkedUrls));
+  filterResources();
+}
+
+/* ==========================================================================
+   7. LOGIN & AUTH LOGIC (UNTOUCHED CONTENTS)
+   ========================================================================== */
+
+let authMode = 'login';
+
+function setAuthMode(mode) {
+  authMode = mode;
+  const isReg = mode === 'register';
+  document.getElementById('authBtnLogin').classList.toggle('active', !isReg);
+  document.getElementById('authBtnRegister').classList.toggle('active', isReg);
+  document.getElementById('authNameGroup').style.display = isReg ? 'block' : 'none';
+  document.getElementById('authSubmitText').textContent = isReg ? 'Create Account' : 'Sign In';
+}
+
+function handleAuthSubmit(e) {
+  e.preventDefault();
+  const email = document.getElementById('authEmailInput').value.trim();
+  const name = authMode === 'register' ? document.getElementById('authNameInput').value.trim() : email.split('@')[0];
+
+  const user = {
+    name: name || "Student Developer",
+    email: email,
+    avatar: (name || "ST").substring(0, 2).toUpperCase(),
+    isLoggedIn: true
+  };
+
+  localStorage.setItem('moyu_user', JSON.stringify(user));
+  alert(`Welcome, ${user.name}! You are now signed in.`);
+  openSection('dashboard');
+}
+
+function quickDemoLogin() {
+  const demoUser = {
+    name: "Alex Lin",
+    email: "alex.lin@university.edu",
+    collegeYear: "Sophomore • CS Minor",
+    avatar: "AL",
+    isLoggedIn: true
+  };
+  localStorage.setItem('moyu_user', JSON.stringify(demoUser));
+  openSection('dashboard');
+}
+
+/* ==========================================================================
+   8. AI MENTOR
+   ========================================================================== */
+
+function toggleAIChat() {
+  document.getElementById('aiDrawer').classList.toggle('open');
+}
+
+function sendAIChatMessage() {
+  const input = document.getElementById('aiChatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const msgs = document.getElementById('aiChatMsgs');
+
+  const userBubble = document.createElement('div');
+  userBubble.className = 'ai-bubble user';
+  userBubble.textContent = text;
+  msgs.appendChild(userBubble);
+  input.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(() => {
+    const botBubble = document.createElement('div');
+    botBubble.className = 'ai-bubble bot';
+    botBubble.innerHTML = getAIResponse(text);
+    msgs.appendChild(botBubble);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 400);
+}
+
+function getAIResponse(query) {
+  const q = query.toLowerCase();
+  if (q.includes("flexbox") || q.includes("grid")) {
+    return "<b>Flexbox vs Grid:</b><br>• <b>Flexbox</b> is 1-dimensional (arranging items in a row OR column, great for navbars, toolbars, and centering).<br>• <b>CSS Grid</b> is 2-dimensional (controls both columns AND rows simultaneously, great for page layouts, galleries, and dashboard widgets).";
+  }
+  if (q.includes("internship") || q.includes("resume")) {
+    return "<b>3 Tips for Tech Internships:</b><br>1. <b>Build 2-3 deep projects</b> deployed live on Vercel/Netlify with readable GitHub repos.<br>2. <b>Use the STAR format</b> on resume bullets.<br>3. <b>Contribute to open source</b> or campus hackathons to stand out from coursework-only applicants.";
+  }
+  if (q.includes("api") || q.includes("rest")) {
+    return "<b>What is an API?</b><br>An API is like a waiter in a restaurant. Your app asks the API for data (e.g., weather forecast), the API goes to the server database, and delivers back the data in clean JSON format!";
+  }
+  return `Great question! When learning <b>${query}</b>, follow our structured pathways: pick your career domain, read the study handbook, and build the milestone projects. Would you like roadmap tips on this?`;
+}
+
+/* ==========================================================================
+   INITIAL LOAD
+   ========================================================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderDomainsGrid();
+  initSurvey();
+  renderMaterials();
+  renderRoadmapFor('webdev');
+  renderResources(FREE_RESOURCES);
+
+  const initialHash = window.location.hash.replace('#', '') || 'home';
+  openSection(initialHash);
+});
+</script>
+
+</body>
+</html>
